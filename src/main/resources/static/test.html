@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf8"/>
+    <title>测试页面</title>
+    <style>
+        a {
+            display: block;
+            margin: 1rem;
+        }
+    </style>
+    <script>
+        window.onload = ()=>{
+            init();
+        }
+        function appendA(baseUrl, part) {
+            const elemA = document.createElement("a");
+                    elemA.target = "_blank";
+                    elemA.href = baseUrl + part;
+                    elemA.innerText = part;
+                    document.body.appendChild(elemA);
+        }
+        function init() {
+            window.baseUrl = "/"
+            const parts = new Array(
+                "mysql/exec/select",
+                "mysql/exec/delete",
+            );
+            const dbTypes = new Array(
+                "ignite", "exasol"
+            )
+            const params = new Array(
+                "/person/select?fetchSize=5&rows=20",    
+                "/person/insert?fetchSize=5&rows=20",
+                "/person/test?fetchSize=5&rows=20",
+                "/score/select?fetchSize=2&rows=5&fkRange=5",
+                "/score/insert?fetchSize=2&rows=5&fkRange=20",
+                "/score/test?fetchSize=2&rows=5&fkRange=20",
+                "/score/join?fetchSize=2&rows=5&fkRange=20",
+            );
+            for(let i=0;i<parts.length;i++) {
+                appendA(baseUrl, parts[i]);
+            }
+            for(let i=0;i<dbTypes.length;i++) {
+                for(let j=0;j<params.length;j++) {
+                    appendA(baseUrl, dbTypes[i] + params[j]);
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <a target="_blank" href="stat/test.html">展示页面</a>
+    <a target="_blank" href="testall/50/10">批量测试ignite与exasol，personRow=50, scoreRow=10</a>
+    <a target="_blank" href="testall/1000000/1000">批量测试ignite与exasol，personRow=100*10000, scoreRow=1000</a>
+    <a target="_blank" href="testall/10000000/1000">批量测试ignite与exasol，personRow=1000*10000, scoreRow=1000</a>
+</body>
+</html>
