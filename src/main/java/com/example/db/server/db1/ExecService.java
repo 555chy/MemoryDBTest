@@ -8,4 +8,5 @@ public interface ExecService {
     List<Exec> selectAll();
     void insert(Exec exec);
     void delete();
+    void truncate();
 }

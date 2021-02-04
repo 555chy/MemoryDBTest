@@ -13,4 +13,6 @@ public interface ExecMapper {
     public void insert(Exec exec);
 
     public void delete();
+
+    public void truncate();
 }

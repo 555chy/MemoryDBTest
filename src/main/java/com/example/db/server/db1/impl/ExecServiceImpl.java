@@ -28,4 +28,9 @@ public class ExecServiceImpl implements ExecService {
     public void delete() {
         execMapper.delete();
     }
+
+    @Override 
+    public void truncate() {
+        execMapper.truncate();
+    }
 }

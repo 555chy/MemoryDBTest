@@ -26,4 +26,8 @@
     <delete id="delete">
         DELETE FROM exec
     </delete>
+
+    <update id="truncate">
+        TRUNCATE TABLE exec
+    </update>
 </mapper>

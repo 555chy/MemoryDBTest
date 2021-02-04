@@ -38,7 +38,8 @@ public class TestController {
     @GetMapping("/{dbType}/exec/delete")
     public List<Exec> execDelete(@PathVariable(value = "dbType") String dbType) {
         System.out.println("exec delete");
-        userService.delete();
+        //userService.delete();
+        userService.truncate();
         return userService.selectAll();
     }
 
