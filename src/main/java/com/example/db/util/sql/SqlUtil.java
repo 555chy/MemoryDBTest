@@ -44,7 +44,7 @@ public class SqlUtil {
     public static final String DB_MYSQL = "mysql";
     //byte[]对应binary而非blob
     public static final String DB_IGNITE = "ignite";
-    //不支持byte[]；不支持create index；bigdecimal太大，Decimal(36,36)，也只能取值（-1,1）；
+    //不支持byte[]；不支持create index；bigdecimal太大，Decimal(36,36)；
     //AS的变量名里result、data、year、month、count都是关键词不能用（加前导下划线也不行）
     //OFFSET not allowed in LIMIT without ORDER BY，且order by必须在limit之前
     public static final String DB_EXASOL = "exasol";

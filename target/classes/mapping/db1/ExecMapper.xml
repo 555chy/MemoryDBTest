@@ -6,11 +6,11 @@
         <result column="testTime" jdbcType="TIMESTAMP" property="testTime"/>
         <result column="dbtype" jdbcType="VARCHAR" property="dbtype"/>
         <result column="tbname" jdbcType="VARCHAR" property="tbname"/>
-        <result column="nrows" jdbcType="TINYINT" property="nrows"/>
+        <result column="nrows" jdbcType="VARCHAR" property="nrows"/>
         <result column="ncols" jdbcType="TINYINT" property="ncols"/>
         <result column="abbr" jdbcType="VARCHAR" property="abbr"/>
         <result column="cmd" jdbcType="VARCHAR" property="cmd"/>
-        <result column="cost" jdbcType="TIMESTAMP" property="cost"/>
+        <result column="cost" jdbcType="INTEGER" property="cost"/>
         <result column="memG" jdbcType="TINYINT" property="memG"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
     </resultMap>

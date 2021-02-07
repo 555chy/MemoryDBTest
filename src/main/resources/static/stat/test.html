@@ -37,6 +37,7 @@
 					str = str + times[i] + units[i];
 				}
 			}
+			if(str == "") str = "0" + units[units.length-1];
 			return str;
 		}
 		function formatTimestampToDate(timestamp) {
@@ -75,10 +76,12 @@
 				types: [
 					{ Name: "", Id: "" },
 					{ Name: "query", Id: "query" },
+					{ Name: "query200", Id: "query200" },
 					{ Name: "query1000", Id: "query1000" },
 					{ Name: "distinct", Id: "distinct" },
 					{ Name: "insert", Id: "insert" },
 					{ Name: "update", Id: "update" },
+					{ Name: "update200", Id: "update200" },
 					{ Name: "update1000", Id: "update1000" },
 					{ Name: "delete", Id: "delete" },
 					{ Name: "drop", Id: "drop" },
@@ -86,6 +89,7 @@
 					{ Name: "groupWhere", Id: "groupWhere" },
 					{ Name: "count", Id: "count" },
 					{ Name: "order", Id: "order" },
+					{ Name: "order200", Id: "order200" },
 					{ Name: "order1000", Id: "order1000" },
 					{ Name: "orderWhere", Id: "orderWhere" },
 					{ Name: "min", Id: "min" },
@@ -94,8 +98,10 @@
 					{ Name: "sumWhere", Id: "sumWhere" },
 					{ Name: "average", Id: "average" },
 					{ Name: "innerJoinAB", Id: "innerJoinAB" },
+					{ Name: "innerJoinAB200", Id: "innerJoinAB200" },
 					{ Name: "innerJoinAB1000", Id: "innerJoinAB1000" },
 					{ Name: "leftJoinAB", Id: "leftJoinAB" },
+					{ Name: "leftJoinAB200", Id: "leftJoinAB200" },
 					{ Name: "leftJoinAB1000", Id: "leftJoinAB1000" }
 				],
 				loadData: function (filter) {
@@ -111,7 +117,8 @@
 							&& (!filter.cmd || client.cmd.indexOf(filter.cmd) > -1)
 							&& (filter.cost === undefined || client.cost === filter.cost)
 							&& (filter.cost2 || client.cost2.indexOf(filter.cost2) > -1)
-							&& (filter.memG === undefined || client.memG === filter.memG);
+							&& (filter.memG === undefined || client.memG === filter.memG)
+							&& (!filter.remark || client.remark.indexOf(filter.remark) > -1);
 					});
 				},
 				insertItem: function (insertingClient) {
@@ -155,13 +162,14 @@
 					{ name: "testTime", type: "text", width: 100, title: "记录时间" },
 					{ name: "dbtype", type: "text", width: 40, title: "数据库" },
 					{ name: "tbname", type: "text", width: 40, title: "表名" },
-					{ name: "nrows", type: "number", width: 50, title: "行数", sorter: "number" },
+					{ name: "nrows", type: "text", width: 50, title: "行数" },
 					{ name: "ncols", type: "number", width: 50, title: "列数", sorter: "number" },
 					{ name: "abbr", type: "select", width: 50, title: "SQL类型", items: db.types, valueField: "Id", textField: "Name" },
 					{ name: "cmd", type: "text", width: 150, title: "SQL语句" },
 					{ name: "cost", type: "number", width: 50, title: "耗时ms" },
 					{ name: "cost2", type: "text", width: 50, title: "耗时" },
 					{ name: "memG", type: "number", width: 50, title: "内存G", sorter: "number" },
+					{ name: "remark", type: "text", width: 50, title: "备注" },
 				]
 			});
 		}
@@ -179,6 +187,46 @@
 	<h1 id="title">内存数据库性能测试汇总表</h1>
 	<div id="jsGrid"></div>
 	<button id="deleteBtn">清空数据</button>
+	<div>
+		<h1>PERSON 建表语句</h1>
+		<pre>
+CREATE TABLE "dbtest".PERSON (
+		ID DECIMAL(36,0) NOT NULL,
+		UID VARCHAR(50) UTF8,
+		SEX DECIMAL(3,0),
+		MALE BOOLEAN,
+		NAME VARCHAR(10) UTF8,
+		AGE DECIMAL(9,0),
+		BIRTHDAY TIMESTAMP,
+		HEIGHT DOUBLE,
+		WEIGHT DECIMAL(9,0),
+		PHONE VARCHAR(20) UTF8,
+		WEBSITE VARCHAR(50) UTF8,
+		WAGES DOUBLE,
+		MONTH_SALES DOUBLE,
+		TURNOVER DOUBLE,
+		PROVINCE VARCHAR(30) UTF8,
+		SCHOOL VARCHAR(30) UTF8,
+		GRADE VARCHAR(20) UTF8,
+		HOBBY_COUNT DECIMAL(3,0),
+		HOBBIES VARCHAR(50) UTF8
+);
+ALTER TABLE "dbtest".PERSON ADD CONSTRAINT ID PRIMARY KEY ("ID") ENABLE;
+		</pre>
+		<h1>SCORE 建表语句</h1>
+		<pre>
+CREATE TABLE "dbtest".SCORE (
+		ID DECIMAL(36,0) NOT NULL,
+		ENGLISHNAME VARCHAR(20) UTF8,
+		CHINESE DECIMAL(9,0),
+		MATH DECIMAL(9,0),
+		ENGLISH DECIMAL(9,0),
+		PERSONID DECIMAL(36,0),
+		CLASSID DECIMAL(3,0)
+);
+ALTER TABLE "dbtest".SCORE ADD CONSTRAINT ID PRIMARY KEY ("ID") ENABLE;
+		</pre>
+	</div>
 </body>
 
 </html>

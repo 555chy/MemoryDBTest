@@ -34,12 +34,13 @@ public class Exec {
     /** 
      * 设置基本信息 
      */
-    public Exec setBase(String dbtype, String tbname, int rows, int ncols, int memG) {
+    public Exec setBase(String dbtype, String tbname, int rows, int ncols, int memG, String remark) {
         this.dbtype = dbtype;
         this.tbname = tbname;
         this.nrows = String.valueOf(rows);
         this.ncols = (byte) ncols;
         this.memG = (byte) memG;
+        this.remark = remark;
         return this;
     }
 

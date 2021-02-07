@@ -40,7 +40,7 @@ public class TestHelper<T> {
 	/** 每多少条打包在一起 */
 	public static final int fetchSize = 100;
 	/** 限制最多仅返回多少条 */
-	public static final int limit = 1000;
+	public static final int limit = 200;
 
 	/** 仅首次显示标题栏 */
 	public static boolean hasShowTitle = false;
@@ -79,13 +79,13 @@ public class TestHelper<T> {
 	//@Autowired
 	public ExecService execService;
 
-	public TestHelper(String dbType, String tablename, int rows, int cols, int memG) {
+	public TestHelper(String dbType, String tablename, int rows, int cols, int memG, String remark) {
 		this.dbtype = dbType;
 		this.tablename = tablename;
 		this.rows = rows;
 		this.cols = cols;
 		this.memG = memG;
-		exec = new Exec().setBase(dbtype, tablename, rows, cols, memG);
+		exec = new Exec().setBase(dbtype, tablename, rows, cols, memG, remark);
 		execService = SpringUtil.getBean(ExecService.class);
 	}
 

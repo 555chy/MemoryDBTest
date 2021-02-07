@@ -34,9 +34,9 @@ public class Score extends TableBean {
             sb.append((char)(c + random.nextInt(26)));
         }
         englishName = sb.toString();
-        chinese = (byte) random.nextInt(SCORE_MAX);
-        math = (byte) random.nextInt(SCORE_MAX);
-        english = (byte) random.nextInt(SCORE_MAX);
+        chinese = (short) random.nextInt(SCORE_MAX);
+        math = (short) random.nextInt(SCORE_MAX);
+        english = (short) random.nextInt(SCORE_MAX);
         classId = (byte) (random.nextInt(6) + 1);
     }
 

@@ -18,8 +18,8 @@ public class TestScoreHelper extends TestHelper<Score> {
 	 * @param rows			 插入行数
 	 * @param fkRange	   外键范围
 	 */
-    public TestScoreHelper(String dbType, int fetchSize, int rows, int fkRange) {
-		super(dbType, tableScore, rows, 20, 20);
+    public TestScoreHelper(String dbType, int fetchSize, int rows, int fkRange, String remark) {
+		super(dbType, tableScore, rows, 6, 20, remark);
 		this.fkRange = fkRange;
         controller = new ScoreHelper(dbType, tablename, fetchSize, rows, fkRange, JDBC_IP);
     }
@@ -156,7 +156,7 @@ public class TestScoreHelper extends TestHelper<Score> {
 		String[] columnA = null;
 		String[] columnB = null;
 
-		String joinAddition = " ORDER BY Person.age";
+		// String joinAddition = " ORDER BY Person.age";
 
 		// controller.drop();
 		// sql = controller.create(useIndex);

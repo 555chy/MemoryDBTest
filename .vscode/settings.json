@@ -1,3 +1,5 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "spring-boot.ls.java.vmargs": ["-Xms1g","-Xmx5g","-XX:CompressedClassSpaceSize=1g","-XX:MetaspaceSize=1g","-XX:MaxMetaspaceSize=1g"], 
+    "cloudfoundry-manifest.ls.java.vmargs": ["-Xms1g","-Xmx5g","-XX:CompressedClassSpaceSize=1g","-XX:MetaspaceSize=1g","-XX:MaxMetaspaceSize=1g"],
 }

@@ -1,6 +1,7 @@
 package com.example.db.controller;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.websocket.server.PathParam;
@@ -23,9 +24,15 @@ public class TestController {
 
     private TestPersonHelper person;
     private TestScoreHelper score;
-
+    
     @Autowired
     private ExecService userService;
+
+    private String remark;
+
+    public void randomRemark() {
+        remark = UUID.randomUUID().toString().substring(0, 8);
+    }
 
     // localhost:8080/mysql/exec/select
     @GetMapping("/{dbType}/exec/select")
@@ -52,18 +59,20 @@ public class TestController {
             personRow = 100 * 10000;
         if (scoreRow == null)
             scoreRow = 1000;
-        final int fetchSize = 1000, fkRange = personRow, pRow = personRow, sRow = scoreRow;
+        final int fetchSize = 200, fkRange = personRow, pRow = personRow, sRow = scoreRow;
         String str = String.format("person row = %d, score row = %d", personRow, scoreRow);
         if (isDeal.get()) {
             System.out.println("isDealing, " + str);
             return "dealing";
         }
-        System.out.println("begin, " + str);
+        randomRemark();
+        System.out.println(remark + " begin, " + str);
         isDeal.set(true);
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String[] dbTypes = { SqlUtil.DB_IGNITE, SqlUtil.DB_EXASOL };
+                //SqlUtil.DB_IGNITE
+                String[] dbTypes = { SqlUtil.DB_EXASOL };
                 for (int i = 0; i < dbTypes.length; i++) {
                     String dbType = dbTypes[i];
                     personTest(dbType, fetchSize, pRow);
@@ -80,10 +89,10 @@ public class TestController {
                     }
                 }
                 isDeal.set(false);
-                System.out.print("exec finish, " + str);
+                System.out.print(remark + " exec finish, " + str);
+                remark = null;
             }
         }).start();
-
         return str;
     }
 
@@ -92,7 +101,7 @@ public class TestController {
             @PathParam(value = "fetchSize") int fetchSize, @PathParam(value = "rows") int rows) {
         System.out.println("person select : fetchSize=" + fetchSize + ", rows=" + rows);
         if (person == null) {
-            person = new TestPersonHelper(dbType, fetchSize, rows);
+            person = new TestPersonHelper(dbType, fetchSize, rows, remark);
             List<Person> data = person.select();
             person.close();
             person = null;
@@ -107,7 +116,7 @@ public class TestController {
             @PathParam(value = "fetchSize") int fetchSize, @PathParam(value = "rows") int rows) {
         System.out.println("person insert : fetchSize=" + fetchSize + ", rows=" + rows);
         if (person == null) {
-            person = new TestPersonHelper(dbType, fetchSize, rows);
+            person = new TestPersonHelper(dbType, fetchSize, rows, remark);
             person.fill();
             person.close();
             person = null;
@@ -121,7 +130,7 @@ public class TestController {
             @PathParam(value = "fetchSize") int fetchSize, @PathParam(value = "rows") int rows) {
         System.out.println("person test : fetchSize=" + fetchSize + ", rows=" + rows);
         if (person == null) {
-            person = new TestPersonHelper(dbType, fetchSize, rows);
+            person = new TestPersonHelper(dbType, fetchSize, rows, remark);
             person.fill();
             person.test();
             person.close();
@@ -136,7 +145,7 @@ public class TestController {
             @PathParam(value = "fkRange") int fkRange) {
         System.out.println("score select : fetchSize=" + fetchSize + ", rows=" + rows);
         if (score == null) {
-            score = new TestScoreHelper(dbType, fetchSize, rows, fkRange);
+            score = new TestScoreHelper(dbType, fetchSize, rows, fkRange, remark);
             List<Score> data = score.select();
             score.close();
             score = null;
@@ -151,7 +160,7 @@ public class TestController {
             @PathParam(value = "fkRange") int fkRange) {
         System.out.println("score insert : fetchSize=" + fetchSize + ", rows=" + rows + ", fkRange=" + fkRange);
         if (score == null) {
-            score = new TestScoreHelper(dbType, fetchSize, rows, fkRange);
+            score = new TestScoreHelper(dbType, fetchSize, rows, fkRange, remark);
             score.fill();
             score.close();
             score = null;
@@ -166,7 +175,7 @@ public class TestController {
             @PathParam(value = "fkRange") int fkRange) {
         System.out.println("score test : fetchSize=" + fetchSize + ", rows=" + rows + ", fkRange=" + fkRange);
         if (score == null) {
-            score = new TestScoreHelper(dbType, fetchSize, rows, fkRange);
+            score = new TestScoreHelper(dbType, fetchSize, rows, fkRange, remark);
             score.fill();
             score.test();
             score.close();
@@ -182,7 +191,7 @@ public class TestController {
             @PathParam(value = "fkRange") int fkRange) {
         System.out.println("score join : fetchSize=" + fetchSize + ", rows=" + rows + ", fkRange=" + fkRange);
         if (score == null) {
-            score = new TestScoreHelper(dbType, fetchSize, rows, fkRange);
+            score = new TestScoreHelper(dbType, fetchSize, rows, fkRange, remark);
             score.fill();
             score.testJoin();
             score.close();

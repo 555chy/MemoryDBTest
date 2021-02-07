@@ -15,8 +15,8 @@ public class TestPersonHelper extends TestHelper<Person> {
 	 * @param rows			 插入行数
 	 * @param fkRange	   外键范围
 	 */
-	public TestPersonHelper(String dbType, int fetchSize, int rows) {
-		super(dbType, tablePerson, rows, 6, 25);
+	public TestPersonHelper(String dbType, int fetchSize, int rows, String remark) {
+		super(dbType, tablePerson, rows, 20, 25, remark);
         controller = new PersonHelper(dbType, tablename, fetchSize, JDBC_IP);
 	}
 
@@ -46,9 +46,9 @@ public class TestPersonHelper extends TestHelper<Person> {
 		// sql = controller.createProducedure();
 		// printCost("createProducedure", sql, rows, cost.end());
 
-		cost.begin();
-		sql = controller.insert(rows);
-		printCost("insert", sql, rows, cost.end());
+		// cost.begin();
+		// sql = controller.insert(rows);
+		// printCost("insert", sql, rows, cost.end());
 		
 		// cost.begin();
 		// sql = controller.query(false);
