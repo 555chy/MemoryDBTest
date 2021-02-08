@@ -111,7 +111,7 @@
 							&& (!filter.testTime || client.testTime.indexOf(filter.testTime) > -1)
 							&& (!filter.dbtype || client.dbtype.indexOf(filter.dbtype) > -1)
 							&& (!filter.tbname || client.tbname.indexOf(filter.tbname) > -1)
-							&& (filter.nrows || client.nrows.indexOf(filter.nrows) > -1)
+							&& (filter.nrows === undefined || client.nrows === filter.nrows)
 							&& (filter.ncols === undefined || client.ncols === filter.ncols)
 							&& (!filter.abbr || client.abbr.indexOf(filter.abbr) > -1)
 							&& (!filter.cmd || client.cmd.indexOf(filter.cmd) > -1)
@@ -162,7 +162,7 @@
 					{ name: "testTime", type: "text", width: 100, title: "记录时间" },
 					{ name: "dbtype", type: "text", width: 40, title: "数据库" },
 					{ name: "tbname", type: "text", width: 40, title: "表名" },
-					{ name: "nrows", type: "number", width: 50, title: "行数", sorter: "number" },
+					{ name: "nrows", type: "text", width: 50, title: "行数" },
 					{ name: "ncols", type: "number", width: 50, title: "列数", sorter: "number" },
 					{ name: "abbr", type: "select", width: 50, title: "SQL类型", items: db.types, valueField: "Id", textField: "Name" },
 					{ name: "cmd", type: "text", width: 150, title: "SQL语句" },

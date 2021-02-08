@@ -53,7 +53,7 @@ public class TestScoreHelper extends TestHelper<Score> {
 		// printCost("query", sql, rows, cost.end());
 
 		cost.begin();
-		sql = controller.query(false, where, 0, limit);
+		sql = controller.query(false, where, orderBy, 0, limit);
 		printCost("query" + limit, sql, rows, cost.end());
 
 		cost.begin();

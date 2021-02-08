@@ -101,19 +101,19 @@ public abstract class JdbcHelper<T> {
     }
 
     public String query(boolean isShow) {
-        return query(isShow, null, 0, 0);
+        return query(isShow, null, null, 0, 0);
     }
 
     public String query(boolean isShow, String where) {
-        return query(isShow, where, 0, 0);
+        return query(isShow, where, null, 0, 0, null);
     }
 
-    public String query(boolean isShow, String where, int from, int to) {
-        return query(isShow, where, 0, 0, null);
+    public String query(boolean isShow, String where, String orderBy, int from, int to) {
+        return query(isShow, where, orderBy, from, to, null);
     }
 
-    public String query(boolean isShow, String where, int from, int to, String query) {
-        String sql = SqlUtil.sqlQuery(tableName, where, from, to, query);
+    public String query(boolean isShow, String where, String orderBy, int from, int to, String query) {
+        String sql = SqlUtil.sqlQuery(tableName, where, orderBy, from, to, query);
         JdbcUtil.query(conn, sql, fetchSize, new DataCallback1<ResultSet>(){
 
             @Override
@@ -127,19 +127,19 @@ public abstract class JdbcHelper<T> {
 
 
     public List<T> querySync(boolean isShow) {
-        return querySync(isShow, null, 0, 0);
+        return querySync(isShow, null, null, 0, 0);
     }
 
     public List<T> querySync(boolean isShow, String where) {
-        return querySync(isShow, where, 0, 0);
+        return querySync(isShow, where, null, 0, 0);
     }
 
-    public List<T> querySync(boolean isShow, String where, int from, int to) {
-        return querySync(isShow, where, 0, 0, null);
+    public List<T> querySync(boolean isShow, String where, String orderBy, int from, int to) {
+        return querySync(isShow, where, orderBy, 0, 0, null);
     }
 
-    public List<T> querySync(boolean isShow, String where, int from, int to, String query) {
-        String sql = SqlUtil.sqlQuery(tableName, where, from, to, query);
+    public List<T> querySync(boolean isShow, String where, String orderBy, int from, int to, String query) {
+        String sql = SqlUtil.sqlQuery(tableName, where, orderBy, from, to, query);
         List<T> data = JdbcUtil.querySync(conn, sql, fetchSize, new ProcessRunnable<T, ResultSet>(){
             @Override
             public T process(ResultSet rs) {

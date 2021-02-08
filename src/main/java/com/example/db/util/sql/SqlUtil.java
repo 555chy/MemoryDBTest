@@ -224,21 +224,22 @@ public class SqlUtil {
     }
 
     public static String sqlQuery(String tableName) {
-        return sqlQuery(tableName, null);
+        return sqlQuery(tableName, null, null, 0, 0);
     }
 
     public static String sqlQuery(String tableName, String where) {
-        return sqlQuery(tableName, where, 0, 0);
+        return sqlQuery(tableName, where, null, 0, 0);
     }
 
-    public static String sqlQuery(String tableName, String where, int from, int to) {
-        return sqlQuery(tableName, where, from, to, null);
+    public static String sqlQuery(String tableName, String where, String orderBy, int from, int to) {
+        return sqlQuery(tableName, where, orderBy, from, to, null);
     }
 
-    public static String sqlQuery(String tableName, String where, int from, int to, String query) {
+    public static String sqlQuery(String tableName, String where, String orderBy, int from, int to, String query) {
         if(query == null) query = "*";
         String sql = String.format(SQL_QUERY, query, tableName);
         sql = addWhere(sql, where);
+        sql = addOrderBy(sql, orderBy);
         sql = addLimit(sql, from, to);
         return wrapSql(sql);
     }
