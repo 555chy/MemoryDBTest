@@ -71,8 +71,8 @@ public class TestController {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //SqlUtil.DB_IGNITE
-                String[] dbTypes = { SqlUtil.DB_EXASOL };
+                //SqlUtil.DB_EXASOL
+                String[] dbTypes = { SqlUtil.DB_IGNITE };
                 for (int i = 0; i < dbTypes.length; i++) {
                     String dbType = dbTypes[i];
                     personTest(dbType, fetchSize, pRow);

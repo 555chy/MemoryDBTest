@@ -6,7 +6,7 @@ spring:
         db1:
             username: root
             password: 123456
-            jdbc-url: jdbc:mysql://114.115.160.23:13306/db_test?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
+            jdbc-url: jdbc:mysql://114.115.160.23:13306/dbtest?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
             driver-class-name: com.mysql.cj.jdbc.Driver
         db2:
             # HikariPool-1 - jdbcUrl is required with driverClassName.
