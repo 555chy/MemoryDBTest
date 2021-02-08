@@ -28,7 +28,7 @@ import org.apache.ignite.cache.query.annotations.QuerySqlField;
 //先对记录取对数log(),然后sum聚合，最后exp，结果就是记录相乘的结果
 //select exp(sum(log(col))) from table where id<100
 public class SqlUtil {
-    public static boolean isShowSql = false;
+    public static boolean isShowSql = true;
 
     /** 类型，字段名，字段值，是否添加索引 */
     public static final int INDEX_TYPE = 0, INDEX_NAME = 1, INDEX_VALUE = 2,INDEX_IDX=3;
