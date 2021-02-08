@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS db_test;
-use db_test;
+CREATE DATABASE IF NOT EXISTS dbtest;
+use dbtest;
 -- DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',

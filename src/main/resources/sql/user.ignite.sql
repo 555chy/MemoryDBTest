@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS db_test;
-use db_test;
+CREATE DATABASE IF NOT EXISTS dbtest;
+use dbtest;
 DROP TABLE IF EXISTS person;
 -- ignite支持16种类型
 CREATE TABLE IF NOT EXISTS person (
