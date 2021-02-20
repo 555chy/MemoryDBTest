@@ -18,10 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
-@RestController
+ 
 public class TestController {
-
+    final String[] dbTypes = { SqlUtil.DB_IGNITE, SqlUtil.DB_EXASOL };
+    //final String[] dbTypes = { SqlUtil.DB_IGNITE };
+    //final String[] dbTypes = { SqlUtil.DB_EXASOL };
+    
     private TestPersonHelper person;
     private TestScoreHelper score;
     
@@ -71,8 +73,6 @@ public class TestController {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //
-                String[] dbTypes = { SqlUtil.DB_IGNITE,SqlUtil.DB_EXASOL };
                 for (int i = 0; i < dbTypes.length; i++) {
                     String dbType = dbTypes[i];
                     personTest(dbType, fetchSize, pRow);

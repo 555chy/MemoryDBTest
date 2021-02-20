@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS exec (
     nrows VARCHAR(20) COMMENT '数据行数',
     ncols TINYINT COMMENT '数据列数',
     abbr VARCHAR(50) NOT NULL COMMENT 'sql语句类型',
-    cmd VARCHAR(200) NOT NULL COMMENT 'sql语句',
+    cmd VARCHAR(300) NOT NULL COMMENT 'sql语句',
     cost INTEGER NOT NULL COMMENT '耗时',
     memG TINYINT NOT NULL COMMENT '内存总大小（单位：G）',
     remark VARCHAR(100) COMMENT '备注',

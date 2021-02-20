@@ -94,15 +94,12 @@ public class SqlUtil {
         HashMap<Class<?>, String> mapper = null;
         switch(dbType) {
             case DB_MYSQL:
-                if(SqlUtil.isShowSql) System.out.println("use mysql mapper");
                 mapper = CLS_MAPPER_MYSQL;
             break;
             case DB_IGNITE:
-                if(SqlUtil.isShowSql) System.out.println("use ignite mapper");
                 mapper = CLS_MAPPER_IGNITE;
             break;
             case DB_EXASOL:
-                if(SqlUtil.isShowSql) System.out.println("use exasol mapper");
                 mapper = CLS_MAPPER_EXASOL;
             break;
         }

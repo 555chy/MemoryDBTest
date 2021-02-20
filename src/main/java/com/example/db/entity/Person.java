@@ -23,7 +23,7 @@ public class Person extends TableBean {
     public long id;
 
     /** 通用唯一标识符，长度128位（16字节） */
-    @QuerySqlField(index = true)
+    @QuerySqlField
     @SqlVarLen(50)
     public String uid;
 
@@ -41,18 +41,18 @@ public class Person extends TableBean {
     public String name;
 
       /** 年龄 [0,100] */
-    @QuerySqlField(index = true)
+    @QuerySqlField
     public short age;
 
     /** 出生时间戳 */
     public Timestamp birthday;
     
     /** 身高 [1.00,2.00] */
-    @QuerySqlField(index = true)
+    @QuerySqlField
     public float height;
 
     /** 体重 [0,100] */
-    @QuerySqlField(index = true)
+    @QuerySqlField
     public short weight;
 
     /** 电话号码 */
@@ -64,15 +64,15 @@ public class Person extends TableBean {
     public String website;
 
     /** 工资 [0.00,20000.00] */
-    @QuerySqlField(index = true)
+    @QuerySqlField
     public double wages;
 
     /** 月销售额 */
-    @QuerySqlField(index = true)
+    @QuerySqlField
     public float month_sales;
     
     /** 总销售额 */
-    @QuerySqlField(index = true)
+    @QuerySqlField
     // public BigDecimal turnover;
     public double turnover;
     
@@ -92,7 +92,7 @@ public class Person extends TableBean {
     public String grade;
 
     /** 爱好个数 */
-    @QuerySqlField(index = true)
+    @QuerySqlField
     public byte hobby_count;
 
     /** 一组多个爱好 */

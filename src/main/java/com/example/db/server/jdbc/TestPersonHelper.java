@@ -118,13 +118,13 @@ public class TestPersonHelper extends TestHelper<Person> {
 		sql = controller.sum(isShowPart, calcItem, where);
 		printCost("sumWhere", sql, rows, cost.end());
 
-		cost.begin();
-		sql = controller.order(false, orderBy);
-		printCost("order", sql, rows, cost.end());
+		// cost.begin();
+		// sql = controller.order(false, orderBy);
+		// printCost("order", sql, rows, cost.end());
 
-		cost.begin();
-		sql = controller.order(false, orderBy, where);
-		printCost("orderWhere", sql, rows, cost.end());
+		// cost.begin();
+		// sql = controller.order(false, orderBy, where);
+		// printCost("orderWhere", sql, rows, cost.end());
 
 		cost.begin();
 		sql = controller.order(false, orderBy, where, 0, limit);

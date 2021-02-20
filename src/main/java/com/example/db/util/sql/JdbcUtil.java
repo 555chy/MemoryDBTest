@@ -56,7 +56,9 @@ public class JdbcUtil {
 
     /** 是否显示中间过程 */
     public static boolean isShowPart = false;
-    public static String DB_IP = "127.0.0.1";
+    public static String IP_MYSQL = "114.115.160.23";
+    public static String IP_IGNITE = "127.0.0.1";
+    public static String IP_EXASOL = "192.168.1.204";
 
     public static class DBInfo {
         public String type;
@@ -64,6 +66,7 @@ public class JdbcUtil {
         public String url;
         public String username;
         public String password;
+        public String ip;
 
         public DBInfo(String type) {
             this.type = type;
@@ -71,20 +74,23 @@ public class JdbcUtil {
                 case SqlUtil.DB_MYSQL:
                     driver = DRIVER_MYSQL;
                     url = URL_MYSQL;
+                    ip = IP_MYSQL;
                     break;
                 case SqlUtil.DB_IGNITE:
                     driver = DRIVER_IGNITE;
                     url = URL_IGNITE;
+                    ip = IP_IGNITE;
                     break;
                 case SqlUtil.DB_EXASOL:
                     driver = DRIVER_EXASOL;
                     url = URL_EXASOL;
+                    ip = IP_EXASOL;
                     username = "sys";
                     password = "exasol";
                     break;
             }
-            if(url != null) {
-                url = String.format(url, DB_IP);
+            if(url != null && ip != null) {
+                url = String.format(url, ip);
             }
         }
     }
