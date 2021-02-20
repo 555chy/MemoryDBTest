@@ -19,10 +19,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
  
+@RestController
 public class TestController {
-    final String[] dbTypes = { SqlUtil.DB_IGNITE, SqlUtil.DB_EXASOL };
+    //final String[] dbTypes = { SqlUtil.DB_IGNITE, SqlUtil.DB_EXASOL };
     //final String[] dbTypes = { SqlUtil.DB_IGNITE };
-    //final String[] dbTypes = { SqlUtil.DB_EXASOL };
+    final String[] dbTypes = { SqlUtil.DB_EXASOL };
     
     private TestPersonHelper person;
     private TestScoreHelper score;

@@ -22,6 +22,7 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 // SQL类型      JDBC对应方法      返回类型(共13种)
@@ -536,4 +537,21 @@ public class JdbcUtil {
         System.out.println(sb.toString());
     }
 
+    public static String toString(ResultSet rs) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnsNumber = rsmd.getColumnCount();
+            //while (rs.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i != 1) sb.append(", ");
+                    String columnValue = rs.getString(i);
+                    sb.append(rsmd.getColumnName(i) + "=" + columnValue);
+                }
+            //}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
 }

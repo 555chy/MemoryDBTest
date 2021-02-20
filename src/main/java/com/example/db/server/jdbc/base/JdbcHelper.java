@@ -10,24 +10,25 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.example.db.callback.DataCallback1;
 import com.example.db.callback.DataCallback2;
 import com.example.db.callback.ProcessRunnable;
+import com.example.db.entity.Person;
 import com.example.db.util.sql.JdbcUtil;
 import com.example.db.util.sql.SqlUtil;
 
 public abstract class JdbcHelper<T> {
 
-    // private static final String SQL_PROCE_CALL = "{call store_procedure_insert(?,?,?,?,?,?)}";
-    // private static final String SQL_PROCE = """
-    //         create procedure store_procedure_insert
-    //         @id LONG,
-    //         @male BOOLEAN,
-    //         @name VARCHAR,
-    //         @age INT,
-    //         @phoneNum CHAR(12),
-    //         @province VARCHAR
-    //         as
-    //         insert into %s(id, male, name, age, phone, province)
-    //         values(@id, @male, @name, @age, @phone, @province)
-    //         """;
+    private static final String SQL_PROCE_CALL = "{call store_procedure_insert(?,?,?,?,?,?)}";
+    private static final String SQL_PROCE = """
+            create procedure store_procedure_insert
+            @id LONG,
+            @male BOOLEAN,
+            @name VARCHAR,
+            @age INT,
+            @phone CHAR(12),
+            @province VARCHAR
+            as
+            insert into %s(id, male, name, age, phone, province)
+            values(@id, @male, @name, @age, @phone, @province)
+            """;
 
     public AtomicLong idGen;
     public Connection conn;
@@ -348,47 +349,47 @@ public abstract class JdbcHelper<T> {
         return sql;
     }
 
-    public String join(String sql, String tableA, String tableB, String[] columnA, String[] columnB) {
-        return join(sql, tableA, tableB, columnA, columnB, null);
+    public String join(String sql, String tableA, String tableB, String tableA_id, String tableB_id, String[] columnA, String[] columnB) {
+        return join(sql, tableA, tableB, tableA_id, tableB_id, columnA, columnB, null);
     }
-    public String join(String sql, String tableA, String tableB, String[] columnA, String[] columnB, DataCallback1<ResultSet> callback) {
-        return join(sql, tableA, tableB, columnA, columnB, callback, 0, 0);
+    public String join(String sql, String tableA, String tableB, String tableA_id, String tableB_id, String[] columnA, String[] columnB, DataCallback1<ResultSet> callback) {
+        return join(sql, tableA, tableB, tableA_id, tableB_id, columnA, columnB, callback, 0, 0);
     }
-    public String join(String sql, String tableA, String tableB, String[] columnA, String[] columnB, DataCallback1<ResultSet> callback, int from, int to) {
-        return join(sql, tableA, tableB, columnA, columnB, callback, from, to, null); 
+    public String join(String sql, String tableA, String tableB, String tableA_id, String tableB_id, String[] columnA, String[] columnB, DataCallback1<ResultSet> callback, int from, int to) {
+        return join(sql, tableA, tableB, tableA_id, tableB_id, columnA, columnB, callback, from, to, null); 
     }
-    public String join(String sql, String tableA, String tableB, String[] columnA, String[] columnB, DataCallback1<ResultSet> callback, int from, int to, String addition) {
-        sql = SqlUtil.sqlJoin(sql, tableA, tableB, columnA, columnB, from, to);
+    public String join(String sql, String tableA, String tableB, String tableA_id, String tableB_id, String[] columnA, String[] columnB, DataCallback1<ResultSet> callback, int from, int to, String addition) {
+        sql = SqlUtil.sqlJoin(sql, tableA, tableB, tableA_id, tableB_id, columnA, columnB, from, to);
         JdbcUtil.query(conn, sql, fetchSize, callback);
         return sql;
     } 
 
-    // public String createProducedure() {
-    //     String sql = String.format(SQL_PROCE, getTableName());
-    //     JdbcUtil.exec(conn, sql);
-    //      return sql;
-    // }
+    public String createProducedure(String tableName) {
+        String sql = String.format(SQL_PROCE, tableName);
+        JdbcUtil.exec(conn, sql);
+         return sql;
+    }
 
-    // public String callProducedure(int count) {
-    //     JdbcUtil.execCall(conn, SQL_PROCE_CALL, count, fetchSize, new DataCallback2<PreparedStatement,Integer>(){
+    public String callProducedure(int count) {
+        JdbcUtil.execCall(conn, SQL_PROCE_CALL, count, fetchSize, new DataCallback2<PreparedStatement,Integer>(){
 
-    //         @Override
-    //         public void onData(PreparedStatement stat, Integer i) {
-    //             PersonBean person = PersonBean.random();
-    //             try {
-    //                 stat.setLong(1, person.getId());
-    //                 stat.setBoolean(2, person.isMale());
-    //                 stat.setString(3, person.getName());
-    //                 stat.setLong(4, person.getAge());
-    //                 stat.setString(5, person.getPhone());
-    //                 stat.setString(6, person.getProvince());
-    //             } catch (SQLException e) {
-    //                 e.printStackTrace();
-    //             }
-    //         }
-    //     });
-    //      return sql;
-    // }
+            @Override
+            public void onData(PreparedStatement stat, Integer i) {
+                Person person = new Person();
+                try {
+                    stat.setLong(1, person.getId());
+                    stat.setBoolean(2, person.isMale());
+                    stat.setString(3, person.getName());
+                    stat.setLong(4, person.getAge());
+                    stat.setString(5, person.getPhone());
+                    stat.setString(6, person.getProvince());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+         return SQL_PROCE_CALL;
+    }
 
     public void close() {
         JdbcUtil.close(conn, null, null);

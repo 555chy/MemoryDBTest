@@ -1,8 +1,10 @@
 package com.example.db.server.jdbc;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.example.db.callback.DataCallback1;
 import com.example.db.callback.DataCallback2;
 import com.example.db.entity.Exec;
 import com.example.db.entity.Score;
@@ -150,6 +152,8 @@ public class TestScoreHelper extends TestHelper<Score> {
 		int rowA = rows;
 		int rowB = fkRange;
 		String rowStr = Exec.getStrRow(rowA, rowB);
+		String tableA_id = "personId";
+		String tableB_id = "id";
         
 		// String[] columnA = new String[]{"id", "name", "age"};
 		// String[] columnB = new String[]{"englishName", "scoreTotal"};
@@ -163,51 +167,56 @@ public class TestScoreHelper extends TestHelper<Score> {
 		// controller.insert(rows);
 
 		cost.begin();
-		sql = controller.join(SqlUtil.SQL_INNER_JOIN, tableA, tableB, columnA, columnB);
+		sql = controller.join(SqlUtil.SQL_INNER_JOIN, tableA, tableB, tableA_id, tableB_id, columnA, columnB, new DataCallback1<ResultSet>(){
+			@Override
+			public void onData(ResultSet rs) {
+				//System.out.println(JdbcUtil.toString(rs));
+			}
+		});
 		printCost("innerJoinAB", sql, rows, cost.end(), rowStr);
 
 		cost.begin();
-		sql =controller.join(SqlUtil.SQL_INNER_JOIN, tableA, tableB, columnA, columnB, null, 0, limit);
+		sql =controller.join(SqlUtil.SQL_INNER_JOIN, tableA, tableB, tableA_id, tableB_id, columnA, columnB, null, 0, limit);
 		printCost("innerJoinAB"+limit, sql, rows, cost.end(), rowStr);
 		
 		// cost.begin();
-		// sql = controller.join(SqlUtil.SQL_INNER_JOIN, tableA, tableB, columnA, columnB, null, 0, limit, joinAddition);
+		// sql = controller.join(SqlUtil.SQL_INNER_JOIN, tableA, tableB, tableA_id, tableB_id, columnA, columnB, null, 0, limit, joinAddition);
 		// printCost("innerJoinAB"+limit+"Order", sql, rows, cost.end(), rowStr);
 
 		cost.begin();
-		sql = controller.join(SqlUtil.SQL_LEFT_JOIN, tableA, tableB, columnB, columnA);
+		sql = controller.join(SqlUtil.SQL_LEFT_JOIN, tableA, tableB, tableA_id, tableB_id, columnB, columnA);
 		printCost("leftJoinAB", sql, rows, cost.end(), rowStr);
 
 		cost.begin();
-		sql = controller.join(SqlUtil.SQL_LEFT_JOIN, tableA, tableB, columnB, columnA, null, 0, limit);
+		sql = controller.join(SqlUtil.SQL_LEFT_JOIN, tableA, tableB, tableA_id, tableB_id, columnB, columnA, null, 0, limit);
 		printCost("leftJoinAB"+limit, sql, rows, cost.end(), rowStr);
 
 		// cost.begin();
-		// sql = controller.join(SqlUtil.SQL_LEFT_JOIN, tableA, tableB, columnA, columnB, null, 0, limit, joinAddition);
+		// sql = controller.join(SqlUtil.SQL_LEFT_JOIN, tableA, tableB, tableA_id, tableB_id, columnA, columnB, null, 0, limit, joinAddition);
 		// printCost("leftjoinAB"+limit+"Order", sql, rows, cost.end(), rowStr);
 
 		// cost.begin();
-		// sql = controller.join(SqlUtil.SQL_RIGHT_JOIN, tableA, tableB, columnA, columnB);
+		// sql = controller.join(SqlUtil.SQL_RIGHT_JOIN, tableA, tableB, tableA_id, tableB_id, columnA, columnB);
 		// printCost("rightJoin", sql, rows, cost.end(), rowStr);
 
 		// cost.begin();
-		// sql = controller.join(SqlUtil.SQL_RIGHT_JOIN, tableA, tableB, columnA, columnB, null, 0, limit);
+		// sql = controller.join(SqlUtil.SQL_RIGHT_JOIN, tableA, tableB, tableA_id, tableB_id, columnA, columnB, null, 0, limit);
 		// printCost("right"+limit, sql, rows, cost.end(), rowStr);
 
 		// cost.begin();
-		// sql = controller.join(SqlUtil.SQL_RIGHT_JOIN, tableA, tableB, columnA, columnB, null, 0, limit, joinAddition);
+		// sql = controller.join(SqlUtil.SQL_RIGHT_JOIN, tableA, tableB, tableA_id, tableB_id, columnA, columnB, null, 0, limit, joinAddition);
 		// printCost("right"+limit+"Order", sql, rows, cost.end(), rowStr);
 
 		// cost.begin();
-		// sql = controller.join(SqlUtil.SQL_OUTER_JOIN, tableA, tableB, columnA, columnB);
+		// sql = controller.join(SqlUtil.SQL_OUTER_JOIN, tableA, tableB, tableA_id, tableB_id, columnA, columnB);
 		// printCost("outerJoin", rows, cost.end(), rowStr);
 
 		// cost.begin();
-		// sql = controller.join(SqlUtil.SQL_OUTER_JOIN, tableA, tableB, columnA, columnB, null, 0, limit);
+		// sql = controller.join(SqlUtil.SQL_OUTER_JOIN, tableA, tableB, tableA_id, tableB_id, columnA, columnB, null, 0, limit);
 		// printCost("outerJoin"+limit, sql, rows, cost.end(), rowStr);
 
 		// cost.begin();
-		// sql = controller.join(SqlUtil.SQL_OUTER_JOIN, tableA, tableB, columnA, columnB, null, 0, limit, joinAddition);
+		// sql = controller.join(SqlUtil.SQL_OUTER_JOIN, tableA, tableB, tableA_id, tableB_id, columnA, columnB, null, 0, limit, joinAddition);
 		// printCost("outerJoin"+limit+"Order", sql, rows, cost.end(), rowStr);
 
 		// statistic(replaceFirst, rows, fetchSize);

@@ -26,6 +26,7 @@ public class TestPersonHelper extends TestHelper<Person> {
 	public void test() {
 		resetFormat(20);
 
+		String tableName = "person";
 		//筛选
 		String where = "height > 1.5";
 		//排序
@@ -41,10 +42,10 @@ public class TestPersonHelper extends TestHelper<Person> {
 		//更新总条数
 		int updateCount = limit;
 
-		//ignite不支持存储过程 
-		// cost.begin();
-		// sql = controller.createProducedure();
-		// printCost("createProducedure", sql, rows, cost.end());
+		//ignite、exasol均不支持存储过程 
+		//cost.begin();
+		//sql = controller.createProducedure(tableName);
+		//printCost("createProducedure", sql, rows, cost.end());
 
 		// cost.begin();
 		// sql = controller.insert(rows);
@@ -54,9 +55,13 @@ public class TestPersonHelper extends TestHelper<Person> {
 		// sql = controller.query(false);
 		// printCost("query", sql, rows, cost.end());
 
+		// cost.begin();
+		// sql = controller.query(false, where, null, 0, limit);
+		// printCost("query" + limit, sql, rows, cost.end());
+
 		cost.begin();
 		sql = controller.query(false, where, orderBy, 0, limit);
-		printCost("query" + limit, sql, rows, cost.end());
+		printCost("queryOrder" + limit, sql, rows, cost.end());
 
 		cost.begin();
 		sql = controller.queryDistinct(false, where, 0, limit, distinctCol);
@@ -118,13 +123,13 @@ public class TestPersonHelper extends TestHelper<Person> {
 		sql = controller.sum(isShowPart, calcItem, where);
 		printCost("sumWhere", sql, rows, cost.end());
 
-		// cost.begin();
-		// sql = controller.order(false, orderBy);
-		// printCost("order", sql, rows, cost.end());
+		cost.begin();
+		sql = controller.order(false, orderBy);
+		printCost("order", sql, rows, cost.end());
 
-		// cost.begin();
-		// sql = controller.order(false, orderBy, where);
-		// printCost("orderWhere", sql, rows, cost.end());
+		cost.begin();
+		sql = controller.order(false, orderBy, where);
+		printCost("orderWhere", sql, rows, cost.end());
 
 		cost.begin();
 		sql = controller.order(false, orderBy, where, 0, limit);

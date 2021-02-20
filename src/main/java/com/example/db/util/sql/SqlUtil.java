@@ -46,7 +46,8 @@ public class SqlUtil {
     public static final String DB_IGNITE = "ignite";
     //不支持byte[]；不支持create index；bigdecimal太大，Decimal(36,36)；
     //AS的变量名里result、data、year、month、count都是关键词不能用（加前导下划线也不行）
-    //OFFSET not allowed in LIMIT without ORDER BY，且order by必须在limit之前
+    //OFFSET not allowed in LIMIT without ORDER BY，如果有limit，必须加order by
+    //ignite、exasol均不支持存储过程 
     public static final String DB_EXASOL = "exasol";
     
     /** java对ignite的类型映射 */
@@ -131,13 +132,13 @@ public class SqlUtil {
     private static final String SQL_DROP = "DROP TABLE IF EXISTS %s";
     
     /** 内连接是最常见的一种连接，只连接匹配的行（交集 InnerJoin等价于join） */
-    public static final String SQL_INNER_JOIN = "SELECT %s FROM tableA INNER JOIN tableB ON tableA.id=tableB.id";
+    public static final String SQL_INNER_JOIN = "SELECT %s FROM tableA INNER JOIN tableB ON tableA_id=tableB_id";
     /** 内连接是最常见的一种连接，只连接匹配的行（Left+交集） */
-    public static final String SQL_LEFT_JOIN = "SELECT %s FROM tableA LEFT JOIN tableB ON tableA.id=tableB.id";
+    public static final String SQL_LEFT_JOIN = "SELECT %s FROM tableA LEFT JOIN tableB ON tableA_id=tableB_id";
     /** 内连接是最常见的一种连接，只连接匹配的行（Right+交集） */
-    public static final String SQL_RIGHT_JOIN = "SELECT %s FROM tableA RIGHT JOIN tableB ON tableA.id=tableB.id";
+    public static final String SQL_RIGHT_JOIN = "SELECT %s FROM tableA RIGHT JOIN tableB ON tableA_id=tableB_id";
     /** 内连接是最常见的一种连接，只连接匹配的行（不支持并集） */
-    public static final String SQL_OUTER_JOIN = "SELECT %s FROM tableA OUTER JOIN tableB on tableA.id=tableB.id";
+    public static final String SQL_OUTER_JOIN = "SELECT %s FROM tableA OUTER JOIN tableB on tableA_id=tableB_id";
 
     private static String wrapSql(String sql) {
         if(isShowSql) System.out.println(sql + "\n");
@@ -331,15 +332,15 @@ public class SqlUtil {
     }
 
     /** 将表A和表B的字段拼接成select */
-    public static String sqlJoin(String sql, String tableA, String tableB, String[] columnA, String[] columnB) {
-        return sqlJoin(sql, tableA, tableB, columnA, columnB, 0, 0);
+    public static String sqlJoin(String sql, String tableA, String tableB, String tableA_id, String tableB_id, String[] columnA, String[] columnB) {
+        return sqlJoin(sql, tableA, tableB, tableA_id, tableB_id, columnA, columnB, 0, 0);
     }
 
-    public static String sqlJoin(String sql, String tableA, String tableB, String[] columnA, String[] columnB, int from, int to) {
-        return sqlJoin(sql, tableA, tableB, columnA, columnB, from, to, null);
+    public static String sqlJoin(String sql, String tableA, String tableB, String tableA_id, String tableB_id, String[] columnA, String[] columnB, int from, int to) {
+        return sqlJoin(sql, tableA, tableB, tableA_id, tableB_id, columnA, columnB, from, to, null);
     }
 
-    public static String sqlJoin(String sql, String tableA, String tableB, String[] columnA, String[] columnB, int from, int to, String addition) {
+    public static String sqlJoin(String sql, String tableA, String tableB, String tableA_id, String tableB_id, String[] columnA, String[] columnB, int from, int to, String addition) {
         String select;
         //表A的列数
         int an = columnA == null ? 0 : columnA.length;
@@ -357,6 +358,8 @@ public class SqlUtil {
             }
             select = String.join(SQL_SEP, columns);
         }
+        sql = sql.replace("tableA_id", tableA + "." + tableA_id);
+        sql = sql.replace("tableB_id", tableB + "." + tableB_id);
         sql = sql.replace("tableA", tableA);
         sql = sql.replace("tableB", tableB);
         sql = String.format(sql, select);

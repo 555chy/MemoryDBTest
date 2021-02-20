@@ -40,7 +40,7 @@ public class TestHelper<T> {
 	/** 每多少条打包在一起 */
 	public static final int fetchSize = 100;
 	/** 限制最多仅返回多少条 */
-	public static final int limit = 200;
+	public static final int limit = 300;
 
 	/** 仅首次显示标题栏 */
 	public static boolean hasShowTitle = false;
