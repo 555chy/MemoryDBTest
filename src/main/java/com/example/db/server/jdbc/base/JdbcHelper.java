@@ -10,25 +10,24 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.example.db.callback.DataCallback1;
 import com.example.db.callback.DataCallback2;
 import com.example.db.callback.ProcessRunnable;
-import com.example.db.entity.Person;
 import com.example.db.util.sql.JdbcUtil;
 import com.example.db.util.sql.SqlUtil;
 
 public abstract class JdbcHelper<T> {
 
-    private static final String SQL_PROCE_CALL = "{call store_procedure_insert(?,?,?,?,?,?)}";
-    private static final String SQL_PROCE = """
-            create procedure store_procedure_insert
-            @id LONG,
-            @male BOOLEAN,
-            @name VARCHAR,
-            @age INT,
-            @phone CHAR(12),
-            @province VARCHAR
-            as
-            insert into %s(id, male, name, age, phone, province)
-            values(@id, @male, @name, @age, @phone, @province)
-            """;
+    // private static final String SQL_PROCE_CALL = "{call store_procedure_insert(?,?,?,?,?,?)}";
+    // private static final String SQL_PROCE = """
+    //         create procedure store_procedure_insert
+    //         @id LONG,
+    //         @male BOOLEAN,
+    //         @name VARCHAR,
+    //         @age INT,
+    //         @phone CHAR(12),
+    //         @province VARCHAR
+    //         as
+    //         insert into %s(id, male, name, age, phone, province)
+    //         values(@id, @male, @name, @age, @phone, @province)
+    //         """;
 
     public AtomicLong idGen;
     public Connection conn;
@@ -364,32 +363,32 @@ public abstract class JdbcHelper<T> {
         return sql;
     } 
 
-    public String createProducedure(String tableName) {
-        String sql = String.format(SQL_PROCE, tableName);
-        JdbcUtil.exec(conn, sql);
-         return sql;
-    }
+    // public String createProducedure(String tableName) {
+    //     String sql = String.format(SQL_PROCE, tableName);
+    //     JdbcUtil.exec(conn, sql);
+    //      return sql;
+    // }
 
-    public String callProducedure(int count) {
-        JdbcUtil.execCall(conn, SQL_PROCE_CALL, count, fetchSize, new DataCallback2<PreparedStatement,Integer>(){
+    // public String callProducedure(int count) {
+    //     JdbcUtil.execCall(conn, SQL_PROCE_CALL, count, fetchSize, new DataCallback2<PreparedStatement,Integer>(){
 
-            @Override
-            public void onData(PreparedStatement stat, Integer i) {
-                Person person = new Person();
-                try {
-                    stat.setLong(1, person.getId());
-                    stat.setBoolean(2, person.isMale());
-                    stat.setString(3, person.getName());
-                    stat.setLong(4, person.getAge());
-                    stat.setString(5, person.getPhone());
-                    stat.setString(6, person.getProvince());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-         return SQL_PROCE_CALL;
-    }
+    //         @Override
+    //         public void onData(PreparedStatement stat, Integer i) {
+    //             Person person = new Person();
+    //             try {
+    //                 stat.setLong(1, person.getId());
+    //                 stat.setBoolean(2, person.isMale());
+    //                 stat.setString(3, person.getName());
+    //                 stat.setLong(4, person.getAge());
+    //                 stat.setString(5, person.getPhone());
+    //                 stat.setString(6, person.getProvince());
+    //             } catch (SQLException e) {
+    //                 e.printStackTrace();
+    //             }
+    //         }
+    //     });
+    //      return SQL_PROCE_CALL;
+    // }
 
     public void close() {
         JdbcUtil.close(conn, null, null);

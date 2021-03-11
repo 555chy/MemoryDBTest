@@ -94,6 +94,7 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.4.200</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- exasol -->
@@ -102,6 +103,13 @@
 			<artifactId>exasol-jdbc</artifactId>
 			<version>7.0.4</version>
 		</dependency>
+
+		<!-- postgresql-->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.19</version>
+	 </dependency>
 
 		<!-- 自动添加get/set -->
 		<dependency>

@@ -45,15 +45,20 @@ public class SqlUtil {
     //byte[]对应binary而非blob
     public static final String DB_IGNITE = "ignite";
     //不支持byte[]；不支持create index；bigdecimal太大，Decimal(36,36)；
-    //AS的变量名里result、data、year、month、count都是关键词不能用（加前导下划线也不行）
+    //变量名里result、data、year、month、count都是关键词不能用（加前导下划线也不行）
     //OFFSET not allowed in LIMIT without ORDER BY，如果有limit，必须加order by
     //ignite、exasol均不支持存储过程 
     public static final String DB_EXASOL = "exasol";
+    //LIMIT N OFFSET S(S从0开始)
+    public static final String DB_POSTGRES = "postgres";
+
+    public static String dbType;
     
     /** java对ignite的类型映射 */
     public static HashMap<Class<?>, String> CLS_MAPPER_IGNITE;
     public static HashMap<Class<?>, String> CLS_MAPPER_MYSQL;
     public static HashMap<Class<?>, String> CLS_MAPPER_EXASOL;
+    public static HashMap<Class<?>, String> CLS_MAPPER_POSTGRES;
     static {
         CLS_MAPPER_IGNITE = new HashMap<Class<?>, String>() {{
             put(boolean.class, "BOOLEAN");
@@ -80,18 +85,23 @@ public class SqlUtil {
             put(Byte[].class, "BINARY");
         }};
         CLS_MAPPER_MYSQL  = (HashMap<Class<?>, String>) CLS_MAPPER_IGNITE.clone();
-        CLS_MAPPER_EXASOL = (HashMap<Class<?>, String>) CLS_MAPPER_IGNITE.clone();
         CLS_MAPPER_MYSQL.put(byte[].class, "BLOB");
         CLS_MAPPER_MYSQL.put(Byte[].class, "BLOB");
+
+        CLS_MAPPER_EXASOL = (HashMap<Class<?>, String>) CLS_MAPPER_IGNITE.clone();
         CLS_MAPPER_EXASOL.remove(byte[].class);
         CLS_MAPPER_EXASOL.remove(Byte[].class);
         CLS_MAPPER_EXASOL.put(BigDecimal.class, "Decimal(36,36)");
-        System.out.println("mysql byte = " + CLS_MAPPER_MYSQL.get(byte[].class));
-        System.out.println("ignite byte = " + CLS_MAPPER_IGNITE.get(byte[].class));
-        System.out.println("exasol byte = " + CLS_MAPPER_EXASOL.get(byte[].class));
+
+        CLS_MAPPER_POSTGRES = (HashMap<Class<?>, String>) CLS_MAPPER_IGNITE.clone();
+        CLS_MAPPER_POSTGRES.put(byte.class, "SMALLINT");
+        CLS_MAPPER_POSTGRES.put(Byte.class, "SMALLINT");
+        CLS_MAPPER_POSTGRES.put(double.class, "DOUBLE PRECISION");
+        CLS_MAPPER_POSTGRES.put(Double.class, "DOUBLE PRECISION");
     }
 
     public static HashMap<Class<?>, String> getClsMapper(String dbType) {
+        SqlUtil.dbType = dbType;
         HashMap<Class<?>, String> mapper = null;
         switch(dbType) {
             case DB_MYSQL:
@@ -103,6 +113,9 @@ public class SqlUtil {
             case DB_EXASOL:
                 mapper = CLS_MAPPER_EXASOL;
             break;
+            case DB_POSTGRES:
+                mapper = CLS_MAPPER_POSTGRES;
+            break;
         }
         return mapper;
     }
@@ -112,8 +125,21 @@ public class SqlUtil {
     public static final String ALIAS_MONTH = "m";
     public static final String ALIAS_COUNT = "c";
 
-    //ignite不支持AUTO_INCREMENT
-    private static final String SQL_CREATE = "CREATE TABLE IF NOT EXISTS %s (\n%s,\nCONSTRAINT ID PRIMARY KEY (%s)\n)";
+    //Exasol连接第三方数据库只能查寻，不能增删改
+    // JDBC-Client-Error: Failed to receive MetaData: No value specified for parameter 1.
+    public static boolean isExasolConnectPgSql = true;
+    public static boolean isPostgres() {
+        return DB_POSTGRES.equals(dbType) || (DB_EXASOL.equals(dbType) && isExasolConnectPgSql);
+    }
+
+    private static final String SQL_EXASOL_CREATE_CONN = "CREATE OR REPLACE CONNECTION JDBC_POSTGRESQL TO "
+        + "'jdbc:postgresql://%s:5432/postgres' USER 'postgres' IDENTIFIED BY 'postgres'";
+    private static final String SQL_EXASOL_WRAP = "SELECT * FROM (IMPORT FROM JDBC at JDBC_POSTGRESQL statement '%s')";
+
+    //ignite,pgsql不支持AUTO_INCREMENT
+    private static final String SQL_CREATE = "CREATE TABLE IF NOT EXISTS %s (\n%s,\nCONSTRAINT _ID PRIMARY KEY (%s)\n)";
+    //postoTabletgresql即是是不同表，约束名也不能重复
+    private static final String SQL_CREATE_PG = "CREATE TABLE IF NOT EXISTS %s (\n%s,\nPRIMARY KEY (%s)\n)";
     //ignite不支持在create时创建索引
     private static final String SQL_CREATE_WITH_INDEX = "CREATE TABLE IF NOT EXISTS %s (\n%s,\nINDEX idx(%s)\nCONSTRAINT ID PRIMARY KEY (%s)\n)";
     private static final String SQL_INDEX  = "CREATE INDEX idx_%s ON %s(%s)";
@@ -123,6 +149,8 @@ public class SqlUtil {
     private static final String SQL_QUERY = "SELECT %s FROM %s";
     private static final String SQL_GROUP = "SELECT %s,COUNT(*) FROM %s GROUP BY %s";
     private static final String SQL_COUNT_YEAR_MONTH = "SELECT YEAR(%s) AS " + ALIAS_YEAR + ", MONTH(%s) AS " + ALIAS_MONTH + ", COUNT(*) AS " + ALIAS_COUNT + " FROM %s GROUP BY YEAR(%s),MONTH(%s)";
+    //postgresql日期处理函数名不同，yyyy等价于YYYY
+    private static final String SQL_COUNT_YEAR_MONTH_PG = "SELECT to_char(%s, 'yyyy') AS " + ALIAS_YEAR + ", to_char(%s, 'mm') AS " + ALIAS_MONTH + ", COUNT(*) AS " + ALIAS_COUNT + " FROM %s GROUP BY to_char(%s, 'yyyy'), to_char(%s, 'mm')";
     private static final String SQL_COUNT = "SELECT COUNT(*) FROM %s";
     private static final String SQL_MIN = "SELECT MIN(%s) AS " + ALIAS_NAME + " FROM %s";
     private static final String SQL_MAX = "SELECT MAX(%s) AS " + ALIAS_NAME + " FROM %s";
@@ -141,6 +169,7 @@ public class SqlUtil {
     public static final String SQL_OUTER_JOIN = "SELECT %s FROM tableA OUTER JOIN tableB on tableA_id=tableB_id";
 
     private static String wrapSql(String sql) {
+        if(DB_EXASOL.equals(dbType) && isExasolConnectPgSql) sql = String.format(SQL_EXASOL_WRAP, sql);
         if(isShowSql) System.out.println(sql + "\n");
         return sql;
     }
@@ -166,8 +195,9 @@ public class SqlUtil {
         }
         String content = sb.toString();
         String sql;
+        String str = isPostgres() ? SQL_CREATE_PG : SQL_CREATE;
         // if(indexs.length == 0) {
-            sql = String.format(SQL_CREATE, tableName, content, id);
+            sql = String.format(str, tableName, content, id);
         // } else {
         //     sql = String.format(SQL_CREATE_WITH_INDEX, tableName, id, content, String.join(SQL_SEP, indexs));
         // }
@@ -281,7 +311,8 @@ public class SqlUtil {
     }
 
     public static String sqlCountYearMonth(String tableName, String timeCol, String where) {
-        String sql = String.format(SQL_COUNT_YEAR_MONTH, timeCol, timeCol, tableName, timeCol, timeCol);
+        String str = isPostgres() ? SQL_COUNT_YEAR_MONTH_PG : SQL_COUNT_YEAR_MONTH;
+        String sql = String.format(str, timeCol, timeCol, tableName, timeCol, timeCol);
         sql = addWhere(sql, where);
         return wrapSql(sql);
     }
@@ -468,9 +499,14 @@ public class SqlUtil {
                         Class<?> type = field.getType();
                         result[INDEX_TYPE][index] = mapper.get(type);
                         if(isStr) {
+                            //字符串都必须加上这个长度注解
                             SqlVarLen len = field.getDeclaredAnnotation(SqlVarLen.class);
-                            result[INDEX_TYPE][index]  += ("(" + len.value() + ")");
+                            if(len != null) result[INDEX_TYPE][index]  += ("(" + len.value() + ")");
                         }
+                        // Id annoId = field.getDeclaredAnnotation(Id.class);
+                        // if(annoId != null) {
+                        //     if(!DB_IGNITE.equals(dbType)) result[INDEX_TYPE][index] += (" NOT NULL AUTO_INCREMENT");
+                        // }
 
                         result[INDEX_NAME][index] = field.getName();
 
@@ -531,9 +567,15 @@ public class SqlUtil {
         StringBuilder sb = new StringBuilder();
         sb.append(sql);
         sb.append(" LIMIT ");
-        sb.append(from);
-        sb.append(",");
-        sb.append(to);
+        if(isPostgres()) {
+            sb.append(to - from);
+            sb.append(" OFFSET ");
+            sb.append(from);
+        } else {
+            sb.append(from);
+            sb.append(",");
+            sb.append(to);
+        }
         return sb.toString();
     }
 

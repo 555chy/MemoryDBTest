@@ -41,11 +41,12 @@ import java.sql.SQLException;
 // time         getTime         java.sql.Time 
 // timestamp    getTimestamp    java.sql.Timestamp(CURRENT_TIMESTAMP增加更新时，会自动设置默认值)
 public class JdbcUtil {
-
     public static final String DRIVER_SQL_SERVER = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
+    public static final String DRIVER_ORACLE = "oracle.jdbc.driver.OracleDriver";
     public static final String DRIVER_MYSQL = "com.mysql.jdbc.Driver";
     public static final String DRIVER_IGNITE = "org.apache.ignite.IgniteJdbcThinDriver";
     public static final String DRIVER_EXASOL = "com.exasol.jdbc.EXADriver";
+    public static final String DRIVER_POSTGRES = "org.postgresql.Driver";
 
     public static final String URL_SQL_SERVER = "jdbc:microsoft:sqlserver://%s/dbtest?useUnicode=true&amp;characterEncoding=utf-8";
     public static final String URL_ORACLE = "jdbc:oracle:thin:@%s/dbtest?useUnicode=true&amp;characterEncoding=utf-8";
@@ -54,12 +55,14 @@ public class JdbcUtil {
     //jdbc:exa:<ipaddress>:<port>;schema=<schemaname>
     // public static final String URL_EXASOL = "jdbc:exa:%s:8563;schema=dbtest";
     public static final String URL_EXASOL = "jdbc:exa:%s:8563;schema=dbtest;clientname=DBeaver;clientversion=7.3.2.202101032114;querytimeout=600;connecttimeout=1000";
+    public static final String URL_POSTGRES = "jdbc:postgresql://%s:5432/postgres";
 
     /** 是否显示中间过程 */
     public static boolean isShowPart = false;
     public static String IP_MYSQL = "114.115.160.23";
     public static String IP_IGNITE = "127.0.0.1";
-    public static String IP_EXASOL = "192.168.1.204";
+    public static String IP_EXASOL = "192.168.0.136";
+    public static String IP_POSTGRES = "192.168.0.136";
 
     public static class DBInfo {
         public String type;
@@ -88,6 +91,13 @@ public class JdbcUtil {
                     ip = IP_EXASOL;
                     username = "sys";
                     password = "exasol";
+                    break;
+                case SqlUtil.DB_POSTGRES:
+                    driver = DRIVER_POSTGRES;
+                    url = URL_POSTGRES;
+                    ip = IP_POSTGRES;
+                    username = "postgres";
+                    password = "postgres";
                     break;
             }
             if(url != null && ip != null) {

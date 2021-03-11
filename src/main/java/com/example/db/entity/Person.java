@@ -8,6 +8,7 @@ import com.example.db.util.DataGenUtil;
 
 import org.apache.ignite.cache.query.annotations.QuerySqlField;
 import org.apache.ignite.cache.query.annotations.QueryTextField;
+import org.springframework.data.annotation.Id;
 
 import lombok.Data;
 
@@ -19,6 +20,7 @@ public class Person extends TableBean {
       * 如果想设置为索引项，那么就要像示例中，加上index=true属性
       * 如果希望以sql的语句查询Person类 请不要再Person类中定义Map之类的复杂数据结构，否则将造成不能使用sql进行查询
       */
+    @Id
     @QuerySqlField(index = true)
     public long id;
 
@@ -101,7 +103,9 @@ public class Person extends TableBean {
     public String hobbies;
 
     /** 数据 */
-    public byte[] data;
+    // public byte[] data;
+    @SqlVarLen(100)
+    public String data;
 
     public Person() {}
     
@@ -125,7 +129,8 @@ public class Person extends TableBean {
         grade = DataGenUtil.grade();
         hobby_count = (byte) DataGenUtil.hobbyCount();
         hobbies = DataGenUtil.hobbies(hobby_count);
-        data = name.getBytes();
+        // data = name.getBytes();
+        data = name +","+ age +","+ phone;
     }
 
 }

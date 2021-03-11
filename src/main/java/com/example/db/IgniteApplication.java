@@ -127,8 +127,6 @@ public class IgniteApplication {
 					// };
 					// cursor2.close();
 					// System.out.println("]]]]]]]]]]]]]]]]]]]]]]]]");
-
-					
 				}
 			}
 		}).start();

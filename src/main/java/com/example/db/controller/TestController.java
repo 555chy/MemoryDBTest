@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestController {
     //final String[] dbTypes = { SqlUtil.DB_IGNITE, SqlUtil.DB_EXASOL };
-    //final String[] dbTypes = { SqlUtil.DB_IGNITE };
-    final String[] dbTypes = { SqlUtil.DB_EXASOL };
+    //final String[] dbTypes = { SqlUtil.DB_EXASOL };
+    final String[] dbTypes = { SqlUtil.DB_POSTGRES };
     
     private TestPersonHelper person;
     private TestScoreHelper score;
